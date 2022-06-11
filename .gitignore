@@ -1,0 +1,4 @@
+.idea
+app_data
+.env
+__pycache__
