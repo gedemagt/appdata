@@ -14,15 +14,11 @@ class AppData:
 
         self._auto_save: bool = auto_save
 
-        if isinstance(key_value_store, str):
-            self._key_value_store = PickleStore(key_value_store)
-        else:
-            self._key_value_store = key_value_store
+        self._key_value_store: KeyValueStore = None
+        self._file_store: FileStore = None
 
-        self._file_store: FileStore = file_store
-        if self._file_store:
-            self.set_file_store(file_store)
-            self._key_value_store.init(self._file_store)
+        self.set_file_store(file_store)
+        self.set_key_value_store(key_value_store)
 
     def __enter__(self):
         return self
@@ -46,10 +42,15 @@ class AppData:
 
     def save(self):
         if self._file_store:
+            print(self._file_store)
             self._key_value_store.flush(self._file_store)
 
     def set_key_value_store(self, key_value_store: KeyValueStore):
-        self._key_value_store = key_value_store
+        if isinstance(key_value_store, str):
+            self._key_value_store = PickleStore(key_value_store)
+        else:
+            self._key_value_store = key_value_store
+
         if self._file_store:
             self._key_value_store.init(self._file_store)
 

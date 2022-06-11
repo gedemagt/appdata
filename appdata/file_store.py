@@ -42,3 +42,6 @@ class Directory(FileStore):
         if 'w' in mode:
             path.parent.mkdir(parents=True, exist_ok=True)
         return open(path, mode)
+
+    def __str__(self):
+        return f"DirectoryStore<{self._parent}>"
