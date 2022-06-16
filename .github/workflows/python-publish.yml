@@ -43,7 +43,7 @@ jobs:
       if: steps.cache.outputs.cache-hit != 'true'  
     - name: Publish to PyPi
       run: |
-        poetry publish -u __token__ -p $TWINE_PASSWORD
+        poetry publish --build -u __token__ -p $TWINE_PASSWORD
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
