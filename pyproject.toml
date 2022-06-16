@@ -6,7 +6,6 @@ authors = ["Jesper Jensen <mail@jeshj.com>"]
 
 [tool.poetry.dependencies]
 python = ">=3.7"
-orjson = "^3.7.2"
 
 [tool.poetry.dev-dependencies]
 
