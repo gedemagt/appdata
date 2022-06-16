@@ -15,16 +15,6 @@ class FileStore(ABC):
     def file(self, path: Union[str, Path], mode='r') -> IO:
         pass
 
-# class AppDirsProvider(AppDataDirProvider):
-#
-#     def __init__(self, app_dirs: AppDirs):
-#         super().__init__()
-#         self._app_dirs = app_dirs
-#
-#     def get_in_app_dir(self, path: str):
-#         parent = Path(self._app_dirs.user_data_dir)
-#         return parent / path
-
 
 class Directory(FileStore):
 
@@ -44,4 +34,4 @@ class Directory(FileStore):
         return open(path, mode)
 
     def __str__(self):
-        return f"DirectoryStore<{self._parent}>"
+        return f"DirectoryStore<path={self._parent}>"

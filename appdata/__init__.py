@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Any, Union, IO
 
 from appdata.file_store import FileStore, Directory
-from appdata.store import KeyValueStore, PickleStore
+from appdata.kv_store import KeyValueStore, PickleStore, JsonKVStore
 
 
 class AppData:
@@ -42,12 +42,11 @@ class AppData:
 
     def save(self):
         if self._file_store:
-            print(self._file_store)
             self._key_value_store.flush(self._file_store)
 
     def set_key_value_store(self, key_value_store: KeyValueStore):
         if isinstance(key_value_store, str):
-            self._key_value_store = PickleStore(key_value_store)
+            self._key_value_store = JsonKVStore(key_value_store)
         else:
             self._key_value_store = key_value_store
 
