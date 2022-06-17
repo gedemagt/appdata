@@ -46,7 +46,8 @@ class AppData:
         self.save()
 
     def __setitem__(self, key: str, value: Any):
-        setattr(self._kv_object, key, value)
+        if self._kv_object is not None:
+            setattr(self._kv_object, key, value)
         self._set_to_store(key, value)
 
     def __getitem__(self, key: str):
