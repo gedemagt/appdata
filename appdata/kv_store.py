@@ -4,7 +4,7 @@ import pickle
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, Union
+from typing import Any, Union, Dict
 
 from appdata import FileStore
 
@@ -25,6 +25,10 @@ class KeyValueStore(ABC):
 
     @abstractmethod
     def get_item(self, key: str) -> Any:
+        pass
+
+    @abstractmethod
+    def get_all(self) -> Dict:
         pass
 
 
@@ -53,6 +57,9 @@ class PickleStore(KeyValueStore):
     def get_item(self, key: str) -> Any:
         return self._internal[key]
 
+    def get_all(self) -> Dict:
+        return self._internal.copy()
+
 
 class JsonKVStore(KeyValueStore):
 
@@ -77,6 +84,9 @@ class JsonKVStore(KeyValueStore):
 
     def get_item(self, key: str) -> Any:
         return self._internal[key]
+
+    def get_all(self) -> Dict:
+        return self._internal.copy()
 
 
 class _CustomEncoder(json.JSONEncoder):
