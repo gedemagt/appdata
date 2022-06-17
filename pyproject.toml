@@ -1,7 +1,10 @@
 [tool.poetry]
 name = "py-appdata"
-version = "0.0.1"
-description = ""
+version = "0.0.2"
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/gedemagt/appdata"
+description = "Small utility library to provide easy access to files and key-value store in an application directory"
 authors = ["Jesper Jensen <mail@jeshj.com>"]
 packages = [
     { include = "appdata" }
@@ -12,6 +15,7 @@ packages = [
 python = ">=3.7"
 
 [tool.poetry.dev-dependencies]
+flake8 = "^4.0.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

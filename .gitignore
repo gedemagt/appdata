@@ -1,4 +1,5 @@
 .idea
 app_data
+**my_app_data_dir**
 .env
 __pycache__
