@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Any, Union, IO
 
 from appdata.file_store import FileStore, Directory
-from appdata.kv_store import KeyValueStore, PickleStore, JsonKVStore
+from appdata.kv_store import KeyValueStore, JsonKVStore
 
 
 class AppData:
@@ -97,6 +97,9 @@ class AppData:
 
     def file(self, path: Union[str, Path], mode) -> IO:
         return self._file_store.file(path, mode)
+
+    def set_auto_save(self, auto_save: bool):
+        self._auto_save = auto_save
 
 
 appdata = AppData()
