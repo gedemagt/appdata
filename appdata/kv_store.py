@@ -31,25 +31,19 @@ class KeyValueStore(ABC):
     def get_all(self) -> Dict:
         pass
 
+    @abstractmethod
+    def delete_item(self, key: str) -> None:
+        pass
 
-class PickleStore(KeyValueStore):
 
-    def __init__(self, path):
+class DictKeyValueStore(KeyValueStore, ABC):
+
+    def __init__(self):
         super().__init__()
-        self._path = path
         self._internal = {}
 
-    def flush(self, file_store: FileStore) -> None:
-        with file_store.file(self._path, 'wb') as f:
-            pickle.dump(self._internal, f, protocol=pickle.HIGHEST_PROTOCOL)
-
-    def init(self, file_store: FileStore) -> None:
-
-        try:
-            with file_store.file(self._path, 'rb') as f:
-                self._internal = pickle.load(f)
-        except FileNotFoundError:
-            pass
+    def set_dict(self, d: dict) -> None:
+        self._internal = d
 
     def set_item(self, key: str, value: Any) -> None:
         self._internal[key] = value
@@ -57,15 +51,37 @@ class PickleStore(KeyValueStore):
     def get_item(self, key: str) -> Any:
         return self._internal[key]
 
+    def delete_item(self, key: str) -> None:
+        if key in self._internal:
+            del self._internal[key]
+
     def get_all(self) -> Dict:
         return self._internal.copy()
 
 
-class JsonKVStore(KeyValueStore):
+class PickleStore(DictKeyValueStore):
 
     def __init__(self, path: Union[str, Path]):
+        super().__init__()
         self._path = path
-        self._internal = {}
+
+    def flush(self, file_store: FileStore) -> None:
+        with file_store.file(self._path, 'wb') as f:
+            pickle.dump(self._internal, f, protocol=pickle.HIGHEST_PROTOCOL)
+
+    def init(self, file_store: FileStore) -> None:
+        try:
+            with file_store.file(self._path, 'rb') as f:
+                self.set_dict(pickle.load(f))
+        except FileNotFoundError:
+            pass
+
+
+class JsonKVStore(DictKeyValueStore):
+
+    def __init__(self, path: Union[str, Path]):
+        super().__init__()
+        self._path = path
 
     def flush(self, file_store: FileStore):
         with file_store.file(self._path, 'w') as f:
@@ -75,18 +91,9 @@ class JsonKVStore(KeyValueStore):
 
         try:
             with file_store.file(self._path, 'r') as f:
-                self._internal = json.load(f, object_hook=decode)
+                self.set_dict(json.load(f, object_hook=decode))
         except FileNotFoundError:
             pass
-
-    def set_item(self, key: str, value: Any) -> None:
-        self._internal[key] = value
-
-    def get_item(self, key: str) -> Any:
-        return self._internal[key]
-
-    def get_all(self) -> Dict:
-        return self._internal.copy()
 
 
 class _CustomEncoder(json.JSONEncoder):

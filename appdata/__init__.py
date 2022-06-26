@@ -53,6 +53,11 @@ class AppData:
     def __getitem__(self, key: str):
         return self._key_value_store.get_item(key)
 
+    def __delitem__(self, key):
+        self._key_value_store.delete_item(key)
+        if self._auto_save:
+            self.save()
+
     def get(self, key, default=None):
         try:
             return self[key]
