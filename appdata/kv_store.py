@@ -4,7 +4,7 @@ import pickle
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, Union
+from typing import Any, Union, Dict
 
 from appdata import FileStore
 
@@ -25,6 +25,10 @@ class KeyValueStore(ABC):
 
     @abstractmethod
     def get_item(self, key: str) -> Any:
+        pass
+
+    @abstractmethod
+    def get_all(self) -> Dict:
         pass
 
     @abstractmethod
@@ -50,6 +54,9 @@ class DictKeyValueStore(KeyValueStore, ABC):
     def delete_item(self, key: str) -> None:
         if key in self._internal:
             del self._internal[key]
+
+    def get_all(self) -> Dict:
+        return self._internal.copy()
 
 
 class PickleStore(DictKeyValueStore):

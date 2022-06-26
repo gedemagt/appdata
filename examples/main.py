@@ -8,7 +8,6 @@ appdata.set_file_store("my_app_data_dir")
 appdata.set_key_value_store("my_store")
 
 appdata["last_login"] = datetime.utcnow().replace(tzinfo=timezone.utc)
-appdata["Erik"] = "Ponti"
 
 with appdata.write("some_file.txt") as f:
     f.write("Mjello")

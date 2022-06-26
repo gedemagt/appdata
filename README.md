@@ -12,7 +12,7 @@ you easily save/retrieve files as well as setting/loading key/values which is a 
 ## Get started
 ````python
 from appdata import appdata
-from datetime import datetime
+from datetime import datetime, timezone
 
 # defaults to app_data
 appdata.set_file_store("my_app_data_dir")
@@ -20,8 +20,31 @@ appdata.set_file_store("my_app_data_dir")
 # defaults to kv_store
 appdata.set_key_value_store("my_store")
 
-appdata["last_login"] = datetime.now()
+appdata["last_login"] = datetime.utcnow().replace(tzinfo=timezone.utc)
 
 with appdata.write("some_file.txt") as f:
     f.write("Mjello")
 ````
+
+## Dataclass support
+If you like type hints, you can register a `dataclass` instance as a proxy for the key-value store
+```python
+from appdata import appdata
+from datetime import datetime, timezone
+from dataclasses import dataclass
+
+
+# Define the dataclass
+@dataclass
+class KV:
+    last_login: datetime = None
+
+
+# Create an object to be referenced and register it to appdata
+kv = KV()
+appdata.register(kv)
+
+
+# The KeyValue object now acts as a proxy, and can be used throughout your project
+kv.last_login = datetime.utcnow().replace(tzinfo=timezone.utc)
+```
