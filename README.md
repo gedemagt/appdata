@@ -25,6 +25,27 @@ appdata["last_login"] = datetime.utcnow().replace(tzinfo=timezone.utc)
 with appdata.write("some_file.txt") as f:
     f.write("Mjello")
 ````
+## Auto save
+The AppData object will auto save as a default. This means, whenever the KeyValue-store has been altered, it will 
+automatically flush.
+This can be disabled, but then you are in charge of flushing. This can either be via the context manager or directly
+via the save method.
+````python
+from appdata import appdata
+
+appdata.set_auto_save(False)
+
+with appdata:
+    appdata["kv1"] = "something"
+    appdata["kv2"] = "something else"
+    
+# Or directly
+
+appdata["kv3"] = "something completely else"
+appdata.save()
+
+
+````
 
 ## Dataclass support
 If you like type hints, you can register a `dataclass` instance as a proxy for the key-value store
@@ -48,3 +69,34 @@ appdata.register(kv)
 # The KeyValue object now acts as a proxy, and can be used throughout your project
 kv.last_login = datetime.utcnow().replace(tzinfo=timezone.utc)
 ```
+
+## Custom KeyValue Store
+You can create a custom KeyValue store by extending the `KeyValueStore` base class, or the `DictKeyValueStore` if you 
+want to use a dict internally, and serialize it in a special way. Remember to registering it to the AppData object.
+````python
+from appdata import appdata
+from appdata.kv_store import KeyValueStore
+
+class MyKeyValueStore(KeyValueStore):
+    
+    ...
+
+
+# defaults to app_data
+appdata.set_key_value_store(MyKeyValueStore())
+````
+
+## Custom File Store
+You can create a custom file store by extending the `FileStore` class and registering it to the AppData object
+````python
+from appdata import appdata
+from appdata.file_store import FileStore
+
+class MyFileStore(FileStore):
+    
+    ...
+
+
+# defaults to app_data
+appdata.set_file_store(MyFileStore())
+````
