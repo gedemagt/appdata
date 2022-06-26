@@ -9,6 +9,11 @@ The core idea is to expose a simple interface that has two properties
 The `AppData` class provides an interface to two storage-abstractions: A file system and a key-value store. This lets
 you easily save/retrieve files as well as setting/loading key/values which is a common app-data usage.
 
+## Installation
+````bash
+pip install py-appdata
+````
+
 ## Get started
 ````python
 from appdata import appdata
