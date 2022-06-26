@@ -48,3 +48,34 @@ appdata.register(kv)
 # The KeyValue object now acts as a proxy, and can be used throughout your project
 kv.last_login = datetime.utcnow().replace(tzinfo=timezone.utc)
 ```
+
+## Custom KeyValue Store
+You can create a custom KeyValue store by extending the `KeyValueStore` base class, or the `DictKeyValueStore` if you 
+want to use a dict internally, and serialize it in a special way.
+````python
+from appdata import appdata
+from appdata.kv_store import KeyValueStore
+
+class MyKeyValueStore(KeyValueStore):
+    
+    ...
+
+
+# defaults to app_data
+appdata.set_key_value_store(MyKeyValueStore())
+````
+
+## Custom File Store
+You can create a custom file store by extending the `FileStore` class and registering
+````python
+from appdata import appdata
+from appdata.file_store import FileStore
+
+class MyFileStore(FileStore):
+    
+    ...
+
+
+# defaults to app_data
+appdata.set_file_store(MyFileStore())
+````
