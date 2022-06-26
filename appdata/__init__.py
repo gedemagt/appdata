@@ -1,3 +1,4 @@
+from dataclasses import is_dataclass
 from pathlib import Path
 from typing import Any, Union, IO
 
@@ -22,7 +23,15 @@ class AppData:
 
         self._kv_object = None
 
-    def register(self, _kv_object):
+    def register(self, _kv_object) -> None:
+        """
+        Registers a dataclass object as a key-value proxy
+        :param _kv_object: A dataclass object
+        """
+
+        if not is_dataclass(_kv_object):
+            raise ValueError("Please use dataclass object.")
+
         self._kv_object = _kv_object
         for key, val in self._key_value_store.get_all().items():
             setattr(_kv_object, key, val)
@@ -58,17 +67,32 @@ class AppData:
         if self._auto_save:
             self.save()
 
-    def get(self, key, default=None):
+    def get(self, key: str, default=None) -> Any:
+        """
+        Get the application data object of some key. If it doesn't exists,
+        return the default parameter.
+        :param key: The key
+        :param default: A default parameter if the key doesn't exits
+        :return: The app data value or the default
+        """
         try:
             return self[key]
         except KeyError:
             return default
 
-    def save(self):
+    def save(self) -> None:
+        """
+        Flushes the KeyValue store
+        """
         if self._file_store:
             self._key_value_store.flush(self._file_store)
 
-    def set_key_value_store(self, key_value_store: KeyValueStore):
+    def set_key_value_store(self, key_value_store: Union[KeyValueStore]):
+        """
+        Set a new KeyValue store. If the parameters is a string, a JsonKVStore
+        is constructed with the value as the name of the file.
+        :param key_value_store: A str or a KeyValueStore object.
+        """
         if isinstance(key_value_store, str):
             self._key_value_store = JsonKVStore(key_value_store)
         else:
@@ -78,6 +102,11 @@ class AppData:
             self._key_value_store.init(self._file_store)
 
     def set_file_store(self, file_store: Union[str, FileStore]):
+        """
+        Set a new file store. If the parameters is a string, a DirectoryStore
+        is constructed with the value as the path to the directory.
+        :param file_store: A str or a FileStore object.
+        """
         if isinstance(file_store, str):
             self._file_store = Directory(file_store)
         else:
@@ -96,9 +125,19 @@ class AppData:
         return self._file_store.file(path, 'rb')
 
     def file(self, path: Union[str, Path], mode) -> IO:
+        """
+        Returns a file-like object in a given mode.
+        :param path: The path to the file in the file store
+        :param mode: The mode - same as open()
+        :return: A file-like object
+        """
         return self._file_store.file(path, mode)
 
-    def set_auto_save(self, auto_save: bool):
+    def set_auto_save(self, auto_save: bool) -> None:
+        """
+        Sets the auto save on or off
+        :param auto_save: Value of auto-save
+        """
         self._auto_save = auto_save
 
 

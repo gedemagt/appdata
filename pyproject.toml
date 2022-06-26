@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "py-appdata"
-version = "0.0.4"
+version = "0.0.5"
 license = "MIT"
 readme = "README.md"
 homepage = "https://github.com/gedemagt/appdata"
